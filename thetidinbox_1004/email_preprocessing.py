@@ -1,6 +1,5 @@
 import re
 from string import punctuation
-from nltk.stem.snowball import SnowballStemmer
 from nltk.corpus import stopwords
 
 def clean_email(email):
@@ -18,18 +17,6 @@ def clean_email(email):
 
     return email
 
-def preproces_email(email):
-
-    words = ""
-    # Create the stemmer.
-    stemmer = SnowballStemmer("english")
-    # Split text into words.
-    email = email.split()
-    for word in email:
-        # Optional: remove unknown words.
-        words = words + stemmer.stem(word) + " "
-
-    return words
 
 def stopword_removal(email):
 
