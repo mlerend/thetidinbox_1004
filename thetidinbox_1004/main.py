@@ -1,5 +1,4 @@
 from data import populate_df
-<<<<<<< HEAD
 import numpy as np
 import pandas as pd
 from email_preprocessing import clean_email, preproces_email,stopword_removal
@@ -7,10 +6,7 @@ from model import count_vectorizer, term_frequency, model, save_pipeline, load_p
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_squared_error
 from math import sqrt
-=======
 from email_preprocessing import clean_email, stopword_removal
->>>>>>> 05b26d8c035ca2b8b3d54d113b7768a803047361
-
 
 def preprocessing():
 
