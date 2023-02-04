@@ -1,5 +1,5 @@
 from data import populate_df
-from email_preprocessing import clean_email, preproces_email,stopword_removal
+from email_preprocessing import clean_email, stopword_removal
 
 
 def preprocessing(path_data):
@@ -15,7 +15,6 @@ def preprocessing(path_data):
     emails_df['class'] = emails_df['class'].map({'spam': 1, 'ham': 0})
 
     emails_df['message'] = emails_df['message'].apply(clean_email)
-    emails_df['message'] = emails_df['message'].apply(preproces_email)
     emails_df['message'] = emails_df['message'].apply(stopword_removal)
 
     return emails_df
