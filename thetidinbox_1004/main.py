@@ -21,5 +21,4 @@ def preprocessing(path_data):
     return emails_df
 
 if __name__ == '__main__':
-
     preprocessing(path_data = '../raw_data/enron1.tar.gz')
