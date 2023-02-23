@@ -1,41 +1,24 @@
-from data import populate_df
 import numpy as np
 import pandas as pd
-from email_preprocessing import clean_email, preproces_email,stopword_removal
-from model import count_vectorizer, term_frequency, model, save_pipeline, load_pipeline
+from preprocessing import clean_email_spam,stopword_removal, preprocessing_pro_perso,preprocessing_spam
+from model_spam import count_vectorizer, term_frequency,tfidf, model_spam, save_pipeline_spam, load_pipeline_spam
+from model_pro_perso import vectorizer, model_pro_perso, save_pipeline_pro_perso,load_pipeline_pro_perso
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_squared_error
 from math import sqrt
-from email_preprocessing import clean_email, stopword_removal
+from data import pro_perso_dataset
 
-def preprocessing():
-
-    path_data = '../raw_data/enron1.tar.gz'
-
-    emails_df = populate_df(path_data)
-    # Translate bytes objects into strings.
-    emails_df['message'] = emails_df['message'].apply(lambda x: x.decode('latin-1'))
-
-    # Reset pandas df index.
-    emails_df = emails_df.reset_index(drop=True)
-
-    # Map 'spam' to 1 and 'ham' to 0
-    emails_df['class'] = emails_df['class'].map({'spam': 1, 'ham': 0})
-
-    emails_df['message'] = emails_df['message'].apply(clean_email)
-    emails_df['message'] = emails_df['message'].apply(stopword_removal)
-
-    return emails_df
-
-def train():
+def train_spam():
+    """ Training and saving a model on spam/non-spam dataset"""
 
     # Pipeline definition
-    pipe = Pipeline([('vectorize', count_vectorizer()),
-                 ('tfidf', term_frequency()),
-                 ('classify', model())])
+    pipe = Pipeline([('tfidf', tfidf()),
+                 ('classify', model_spam())])
+
+    # Picking the dataset to train on
+    emails_df = preprocessing_spam()
 
     # X and y definition
-    emails_df = preprocessing()
     X = emails_df['message'].values
     y = emails_df['class'].values
 
@@ -53,13 +36,13 @@ def train():
     params = pipe.get_params()
 
     # Save pipeline
-    save_pipeline(pipe, params, metrics)
+    save_pipeline_spam(pipe, params, metrics)
 
     print(f'- metrics of the model saved : {metrics}')
 
     return metrics
 
-def pred(X_pred: pd.DataFrame = None) -> np.ndarray:
+def pred_spam(X_pred: pd.DataFrame = None) -> np.ndarray:
     """
     Make a prediction of spam / ham given an X
 
@@ -71,26 +54,93 @@ def pred(X_pred: pd.DataFrame = None) -> np.ndarray:
     X_pred.drop_duplicates(keep='first',inplace=True)
 
     # Translate bytes objects into strings.
-    X_pred['message'] = X_pred['message'].apply(lambda x: x.decode('latin-1'))
+    try:
+        X_pred['message'] = X_pred['message'].apply(lambda x: x.decode('latin-1'))
+    except (UnicodeDecodeError, AttributeError):
+        pass
 
     # Reset pandas df index.
     X_pred = X_pred.reset_index(drop=True)
 
     # Applying preprocessing feature
-    X_pred['message'] = X_pred['message'].apply(clean_email)
-    X_pred['message'] = X_pred['message'].apply(preproces_email)
+    X_pred['message'] = X_pred['message'].apply(clean_email_spam)
     X_pred['message'] = X_pred['message'].apply(stopword_removal)
 
     # Loading the latest pipeline saved
-    pipe = load_pipeline()
+    pipe = load_pipeline_spam()
 
     # Prediction
     y_pred = pipe.predict(X_pred['message'])
+    y_pred_proba = pipe.predict_proba(X_pred['message'])
+
+    return y_pred
+
+
+def preprocessing_pro_perso_dataset():
+    """ Preprocessing the email/message dataset"""
+
+    df = pro_perso_dataset()
+    df_preproc = preprocessing_pro_perso(df)
+    return df_preproc
+
+def train_pro_perso():
+    """ Training and saving a model on the preprocessed email/message dataset"""
+
+    # Pipeline definition
+    pipe = Pipeline([('vectorize', vectorizer()),
+                 ('classify', model_pro_perso())])
+
+    # X and y definition
+    emails_df = preprocessing_pro_perso_dataset()
+    X = emails_df['body'].values
+    y = emails_df['category'].values
+
+    # Fit
+    pipe.fit(X, y)
+
+    # Metrics
+    accuracy = pipe.score(X, y)
+    metrics = {"accuracy" : round(accuracy,4)}
+
+    # Parameters
+    params = pipe.get_params()
+
+    # Save pipeline
+    save_pipeline_pro_perso(pipe, params, metrics)
+
+    print(f'- metrics of the model saved : {metrics}')
+
+    return metrics
+
+def pred_pro_perso(X_pred: pd.DataFrame = None) -> np.ndarray:
+    """
+    Make a prediction of professional / personal given an X
+
+    X must be a DataFrame with the body of the mail in a column named 'body'
+
+    """
+    # Preprocessing
+    X_pred_proc = preprocessing_pro_perso(X_pred)
+
+    # Loading the latest pipeline saved
+    pipe = load_pipeline_pro_perso()
+
+    # Prediction
+    y_pred = pipe.predict(X_pred_proc['body'])
 
     return y_pred
 
 if __name__ == '__main__':
-    preprocessing()
-    train()
-    X_pred = populate_df('../raw_data/enron1.tar.gz').sample(1)
-    print(pred(X_pred))
+    # train_spam()
+    # train_pro_perso()
+
+    test = input("Enter a message : ")
+
+    spam = pred_spam(pd.DataFrame({"message": [test]}))
+    # print(spam)
+    pro_perso = pred_pro_perso(pd.DataFrame({"body": [test]}))
+    d_spam = {0:"==>Not a spam", 1:"==>Spam"}
+    d_pro_perso = {0:"==>Professional", 1:"==>Personal"}
+
+    # # print("Test email:", "'"+test+"'")
+    print (d_spam[spam[0]], d_pro_perso[pro_perso[0]])
