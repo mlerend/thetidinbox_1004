@@ -31,9 +31,13 @@ termcolor
 pickle
 time
 os
+requests
 
 #email preprocessing
 re
 string
 nltk.stem.snowball
 nltk.corpus
+nltk.tokenize
+nltk.stem
+mailparser
