@@ -11,6 +11,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_squared_error
 from math import sqrt
 from data import pro_perso_dataset
+from gmail_api import google_api
 
 def train_spam():
     """ Training and saving a model on spam/non-spam dataset"""
@@ -139,10 +140,6 @@ def urgent_categories(df, urgent_df=urgent_vocab_dict()):
     df["present"] = df.body.apply(lambda x: is_word_present(urgent_df, x))
     df["wordspresent"] = df.body.apply(lambda x: which_word_present(urgent_df, x))
     df["columnspresent"] = df.body.apply(lambda x: which_column_present(urgent_df, x))
-    #if not df["present"].any():
-        #return 'non urgent'
-    #if df["present"].any() == False:
-        #return 'non urgent'
     return df
 
 def action_categories(df, action_df=action_dict()):
@@ -165,39 +162,54 @@ def train_bertopic():
     return None
 
 def pred_bertopic(x_pred):
-    x_pred_proc = preprocessing_pro_perso(x_pred).values[0][0]
+
     model = load_bertopic_model()
+    x_pred_proc = preprocessing_pro_perso(x_pred)
+    topics = [model.find_topics(x, top_n = 1)[0][0] for x in x_pred_proc["body"]]
     freq = model.get_topic_info()
     cat_name_df = dict_cat().join(freq.set_index("Topic").drop(columns="Count"))
-    similar_topics, similarity = model.find_topics(x_pred_proc)
-    for topic,i in zip(similar_topics,range(0,len(similarity))):
-         return cat_name_df.loc[topic,"Category"], similarity[i]
-   
-    
+    cat_pred = [cat_name_df.loc[topic,"Category"] for topic in topics]
+    return cat_pred
+
+
 if __name__ == '__main__':
-    # train_spam()
-    # train_pro_perso()
-    # train_bertopic()
-    
+
     # Test string
-    test = input("Enter a message : ")
-    print(pred_bertopic(pd.DataFrame({"body": [test]})))
+    # test = input("Enter a message : ")
+    test = google_api()
+
+
     # Prediction
-    # spam = pred_spam(pd.DataFrame({"message": [test]}))
-    # pro_perso = pred_pro_perso(pd.DataFrame({"body": [test]}))
-    # urgent_class = urgent_categories(pd.DataFrame({"body": [test]}))['present']
-    #unique_urgent_class = unique_values(urgent_class['columnspresent'])
-    #action_class = action_categories(pd.DataFrame({"body": [test]}))
-    #unique_action_class = unique_values(action_class['columnspresent'])
-    #meeting = pred_meeting_invit(pd.Series(test))
-    
-    # test_bert = pred_bertopic(pd.DataFrame({"body": [test]}))
-    # print(test_bert)
+    spam = pred_spam(pd.DataFrame({"message": test}))
+    pro_perso = pred_pro_perso(pd.DataFrame({"body": test}))
+    urgent_class = urgent_categories(pd.DataFrame({"body": test}))['present']
+    action_class = action_categories(pd.DataFrame({"body": test}))
+    unique_action_class = unique_values(action_class['columnspresent'])
+    meeting = pred_meeting_invit(test)
+    topic = pred_bertopic(pd.DataFrame({"body": test}))
+
     # Return
-    #d_spam = {0:"==>Not a spam", 1:"==>Spam"}
-    #d_pro_perso = {0:"==>Professional", 1:"==>Personal"}
-    #d_meeting_invit = {0:"==>Not a meeting invit", 1:"==>Meeting invitation"}
+    d_spam = {0:"==>Not a spam", 1:"==>Spam"}
+    d_pro_perso = {0:"==>Professional", 1:"==>Personal"}
+    d_meeting_invit = {0:"==>Not a meeting invit", 1:"==>Meeting invitation"}
+    d_urgent = {False: "==> Not urgent", True: "Urgent"}
 
+    for message in range(0,len(test)):
 
-    #print (d_spam[spam[0]], d_pro_perso[pro_perso[0]],unique_urgent_class, unique_action_class, d_meeting_invit[meeting[0]])
-    # print(urgent_class)
+        # Gestion des action words
+        action = action_class["columnspresent"][message]
+        if len(action)==0:
+            action_word="==> No action verb"
+        else:
+            action_word=f'==> {set(action)}'
+
+        # Print results
+        print ("Email:", test[message],"\n",
+            d_spam[spam[message]],"\n",
+           d_pro_perso[pro_perso[message]],"\n",
+           d_urgent[urgent_class.values[message]],"\n",
+           action_word,'\n',
+           d_meeting_invit[meeting[message]],"\n",
+           topic[message],'\n',
+           "----------------------------------------------------",'\n'
+           )
