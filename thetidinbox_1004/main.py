@@ -4,6 +4,7 @@ from preprocessing import clean_email_spam,stopword_removal, preprocessing_pro_p
 from model_spam import count_vectorizer, term_frequency,tfidf, model_spam, save_pipeline_spam, load_pipeline_spam
 from model_pro_perso import vectorizer, model_pro_perso, save_pipeline_pro_perso,load_pipeline_pro_perso
 from model_action_word import action_dict, is_word_present, which_word_present, which_column_present, unique_values
+from model_meeting_invit import classify_meeting_invit
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_squared_error
 from math import sqrt
@@ -138,23 +139,28 @@ def action_categories(df, action_df=action_dict()):
     df["columnspresent"] = df.body.apply(lambda x: which_column_present(action_df, x))
     return df
 
+def pred_meeting_invit(X_pred: pd.Series = None) -> int:
+    y_pred = X_pred.apply(classify_meeting_invit)
+    return y_pred
+
 if __name__ == '__main__':
     # train_spam()
     # train_pro_perso()
 
+    # Test string
     test = input("Enter a message : ")
 
+    # Prediction
     spam = pred_spam(pd.DataFrame({"message": [test]}))
-    # print(spam)
     pro_perso = pred_pro_perso(pd.DataFrame({"body": [test]}))
-    d_spam = {0:"==>Not a spam", 1:"==>Spam"}
-    d_pro_perso = {0:"==>Professional", 1:"==>Personal"}
-    
     action_class = action_categories(pd.DataFrame({"body": [test]}))
     unique_action_class = unique_values(action_class['columnspresent'])
+    meeting = pred_meeting_invit(pd.Series(test))
 
-    # # # print("Test email:", "'"+test+"'")
-    print (d_spam[spam[0]], d_pro_perso[pro_perso[0]], unique_action_class)
-    
-    
-    
+    # Return
+    d_spam = {0:"==>Not a spam", 1:"==>Spam"}
+    d_pro_perso = {0:"==>Professional", 1:"==>Personal"}
+    d_meeting_invit = {0:"==>Not a meeting invit", 1:"==>Meeting invitation"}
+
+
+    print (d_spam[spam[0]], d_pro_perso[pro_perso[0]], unique_action_class, d_meeting_invit[meeting[0]])
