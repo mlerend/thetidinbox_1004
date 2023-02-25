@@ -3,6 +3,7 @@ import pandas as pd
 from preprocessing import clean_email_spam,stopword_removal, preprocessing_pro_perso,preprocessing_spam
 from model_spam import count_vectorizer, term_frequency,tfidf, model_spam, save_pipeline_spam, load_pipeline_spam
 from model_pro_perso import vectorizer, model_pro_perso, save_pipeline_pro_perso,load_pipeline_pro_perso
+from model_action_word import action_dict, is_word_present, which_word_present, which_column_present, unique_values
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_squared_error
 from math import sqrt
@@ -130,6 +131,13 @@ def pred_pro_perso(X_pred: pd.DataFrame = None) -> np.ndarray:
 
     return y_pred
 
+def action_categories(df, action_df=action_dict()):
+    df['body'] = df['body'].astype(str)
+    df["present"] = df.body.apply(lambda x: is_word_present(action_df, x))
+    df["wordspresent"] = df.body.apply(lambda x: which_word_present(action_df, x))
+    df["columnspresent"] = df.body.apply(lambda x: which_column_present(action_df, x))
+    return df
+
 if __name__ == '__main__':
     # train_spam()
     # train_pro_perso()
@@ -141,6 +149,12 @@ if __name__ == '__main__':
     pro_perso = pred_pro_perso(pd.DataFrame({"body": [test]}))
     d_spam = {0:"==>Not a spam", 1:"==>Spam"}
     d_pro_perso = {0:"==>Professional", 1:"==>Personal"}
+    
+    action_class = action_categories(pd.DataFrame({"body": [test]}))
+    unique_action_class = unique_values(action_class['columnspresent'])
 
-    # # print("Test email:", "'"+test+"'")
-    print (d_spam[spam[0]], d_pro_perso[pro_perso[0]])
+    # # # print("Test email:", "'"+test+"'")
+    print (d_spam[spam[0]], d_pro_perso[pro_perso[0]], unique_action_class)
+    
+    
+    
