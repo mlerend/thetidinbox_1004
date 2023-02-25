@@ -4,6 +4,7 @@ from preprocessing import clean_email_spam,stopword_removal, preprocessing_pro_p
 from model_spam import count_vectorizer, term_frequency,tfidf, model_spam, save_pipeline_spam, load_pipeline_spam
 from model_pro_perso import vectorizer, model_pro_perso, save_pipeline_pro_perso,load_pipeline_pro_perso
 from model_action_word import action_dict, is_word_present, which_word_present, which_column_present, unique_values
+from model_bertopic import bertopic_model, save_bertopic_model, load_bertopic_model, dict_cat
 from model_meeting_invit import classify_meeting_invit
 from model_urgent_word import urgent_vocab_dict
 from sklearn.pipeline import Pipeline
@@ -155,22 +156,43 @@ def pred_meeting_invit(X_pred: pd.Series = None) -> int:
     y_pred = X_pred.apply(classify_meeting_invit)
     return y_pred
 
+def train_bertopic():
+    model = bertopic_model()
+    df = preprocessing_pro_perso_dataset().query("category==1").reset_index(drop=True)
+    model.fit(df['body'])
+    headline_topics, _ = model.transform(df['body'])
+    save_bertopic_model(model)
+    return None
+
+def pred_bertopic(x_pred):
+    x_pred_proc = preprocessing_pro_perso(x_pred).values[0][0]
+    model = load_bertopic_model()
+    freq = model.get_topic_info()
+    cat_name_df = dict_cat().join(freq.set_index("Topic").drop(columns="Count"))
+    similar_topics, similarity = model.find_topics(x_pred_proc)
+    for topic,i in zip(similar_topics,range(0,len(similarity))):
+         return cat_name_df.loc[topic,"Category"], similarity[i]
+   
+    
 if __name__ == '__main__':
     # train_spam()
     # train_pro_perso()
-
+    # train_bertopic()
+    
     # Test string
     test = input("Enter a message : ")
-
+    print(pred_bertopic(pd.DataFrame({"body": [test]})))
     # Prediction
-    spam = pred_spam(pd.DataFrame({"message": [test]}))
-    pro_perso = pred_pro_perso(pd.DataFrame({"body": [test]}))
-    urgent_class = urgent_categories(pd.DataFrame({"body": [test]}))['present']
+    # spam = pred_spam(pd.DataFrame({"message": [test]}))
+    # pro_perso = pred_pro_perso(pd.DataFrame({"body": [test]}))
+    # urgent_class = urgent_categories(pd.DataFrame({"body": [test]}))['present']
     #unique_urgent_class = unique_values(urgent_class['columnspresent'])
-#action_class = action_categories(pd.DataFrame({"body": [test]}))
+    #action_class = action_categories(pd.DataFrame({"body": [test]}))
     #unique_action_class = unique_values(action_class['columnspresent'])
     #meeting = pred_meeting_invit(pd.Series(test))
-
+    
+    # test_bert = pred_bertopic(pd.DataFrame({"body": [test]}))
+    # print(test_bert)
     # Return
     #d_spam = {0:"==>Not a spam", 1:"==>Spam"}
     #d_pro_perso = {0:"==>Professional", 1:"==>Personal"}
@@ -178,4 +200,4 @@ if __name__ == '__main__':
 
 
     #print (d_spam[spam[0]], d_pro_perso[pro_perso[0]],unique_urgent_class, unique_action_class, d_meeting_invit[meeting[0]])
-    print(urgent_class)
+    # print(urgent_class)
