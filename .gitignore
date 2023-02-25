@@ -3,8 +3,10 @@
 .ipynb_checkpoints
 .DS_Store
 raw_data/
-notebooks/
+./notebooks/
 *.csv
 **/__pycache__/
 .env
 *.ipynb
+credentials.json
+token.json
