@@ -7,6 +7,7 @@ from model_action_word import action_dict, is_word_present, which_word_present, 
 from model_bertopic import bertopic_model, save_bertopic_model, load_bertopic_model, dict_cat
 from model_meeting_invit import classify_meeting_invit
 from model_urgent_word import urgent_vocab_dict
+from model_todo import generate_to_do
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_squared_error
 from math import sqrt
@@ -171,6 +172,11 @@ def pred_bertopic(x_pred):
     cat_pred = [cat_name_df.loc[topic,"Category"] for topic in topics]
     return cat_pred
 
+def generate_todo_from_emails(X_pred):
+    X_pred['body'] = X_pred['body'].astype(str)
+    X_pred["to_do"] = X_pred.body.apply(generate_to_do)
+    return X_pred["to_do"]
+
 
 if __name__ == '__main__':
 
@@ -187,6 +193,7 @@ if __name__ == '__main__':
     unique_action_class = unique_values(action_class['columnspresent'])
     meeting = pred_meeting_invit(test)
     topic = pred_bertopic(pd.DataFrame({"body": test}))
+    todo = generate_todo_from_emails(pd.DataFrame({"body": test}))
 
     # Return
     d_spam = {0:"==>Not a spam", 1:"==>Spam"}
@@ -201,7 +208,7 @@ if __name__ == '__main__':
         if len(action)==0:
             action_word="==> No action verb"
         else:
-            action_word=f'==> {set(action)}'
+            action_word=f'==> {", ".join([act for act in action])}'
 
         # Print results
         print ("Email:", test[message],"\n",
@@ -211,5 +218,6 @@ if __name__ == '__main__':
            action_word,'\n',
            d_meeting_invit[meeting[message]],"\n",
            topic[message],'\n',
+           todo[message],'\n',
            "----------------------------------------------------",'\n'
            )
