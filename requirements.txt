@@ -9,6 +9,7 @@ numpy
 pandas
 scikit-learn
 math
+spacy
 
 # tests/linter
 black
