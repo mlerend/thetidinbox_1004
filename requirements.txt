@@ -32,7 +32,6 @@ termcolor
 requests
 
 #email preprocessing
-nltk.corpus
-nltk.tokenize
+nltk
 mailparser
 email
