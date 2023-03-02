@@ -1,5 +1,6 @@
 .env
 .env.yaml
+.envrc
 
 # System files
 .DS_Store
