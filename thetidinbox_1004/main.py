@@ -208,7 +208,9 @@ if __name__ == '__main__':
         if len(action)==0:
             action_word="==> No action verb"
         else:
-            action_word=f'==> {", ".join([act for act in action])}'
+            # action_word=f'==> {", ".join([act for act in action])}'
+            action_word=f'==> {",".join(list(set([act for act in action])))}'
+
 
         # Print results
         print ("Email:", test[message],"\n",
