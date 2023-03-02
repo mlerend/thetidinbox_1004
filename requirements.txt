@@ -8,7 +8,6 @@ wheel>=0.29
 numpy
 pandas
 scikit-learn
-math
 spacy
 
 # tests/linter
@@ -29,8 +28,7 @@ six>=1.14
 joblib
 memoized-property
 termcolor
-pickle
-time
+# pickle
 os
 requests
 
@@ -42,3 +40,4 @@ nltk.corpus
 nltk.tokenize
 nltk.stem
 mailparser
+email
