@@ -33,5 +33,4 @@ requests
 
 #email preprocessing
 nltk
-mailparser
 email
