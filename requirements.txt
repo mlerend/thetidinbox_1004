@@ -32,7 +32,6 @@ termcolor
 requests
 
 #email preprocessing
-re
 string
 nltk.stem.snowball
 nltk.corpus
