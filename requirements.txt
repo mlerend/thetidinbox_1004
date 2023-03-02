@@ -32,9 +32,9 @@ termcolor
 requests
 
 #email preprocessing
+nltk.stem
 nltk.stem.snowball
 nltk.corpus
 nltk.tokenize
-nltk.stem
 mailparser
 email
