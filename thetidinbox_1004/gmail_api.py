@@ -9,6 +9,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import base64
 import pandas as pd
+import email
 
 
 # If modifying these scopes, delete the file token.json.
@@ -51,8 +52,16 @@ def google_api():
             return
         email_body = []
         for message in messages:
-            msg = service.users().messages().get(userId='me', id=message['id']).execute()
-            email_body.append(base64.urlsafe_b64decode(msg['payload']['parts'][0]['body']['data']).decode("utf-8"))
+            msg = service.users().messages().get(userId='me', id=message['id'], format='raw').execute()
+            msg_str = msg['raw'].encode('utf-8')
+            msg_str = base64.urlsafe_b64decode(msg_str).decode('utf-8')
+            msg = email.message_from_string(msg_str)
+            # email_body.append(base64.urlsafe_b64decode(msg['payload']['parts'][0]['body']['data']).decode("utf-8"))
+            if msg.is_multipart():
+                body = msg.get_payload()[0].get_payload()
+            else:
+                body = msg.get_payload()
+            email_body.append(body)
 
         return pd.Series(email_body)
 
@@ -61,5 +70,5 @@ def google_api():
         print(f'An error occurred: {error}')
 
 if __name__ == '__main__':
-    res = google_api()
-    print(res)
+    google_api()
+    # print(res)
