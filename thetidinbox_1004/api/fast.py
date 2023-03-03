@@ -1,9 +1,11 @@
+import numpy as np
 import pandas as pd
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from main import train_spam, pred_spam, preprocessing_pro_perso_dataset, train_pro_perso, pred_pro_perso, urgent_categories, action_categories, pred_meeting_invit, train_bertopic, pred_bertopic, unique_values
-import pandas as pd
-import numpy as np
+
+from thetidinbox_1004.main import (action_categories, pred_bertopic,
+                                   pred_meeting_invit, pred_pro_perso,
+                                   pred_spam, unique_values, urgent_categories)
 
 app = FastAPI()
 
@@ -31,7 +33,7 @@ def all_functions(test):
     unique_action_class = np.array(unique_values(action_class['columnspresent'])).tolist()
     meeting = np.array(pred_meeting_invit(test)).tolist()
     topic = np.array(pred_bertopic(pd.DataFrame({"body": test}))).tolist()
-    
+
     return {"spam prediction": spam,
             "pred_pro_perso": pro_perso,
             "urgent categorisation": urgent_class,
@@ -39,4 +41,3 @@ def all_functions(test):
             "meeting prediction": meeting,
             "bertopic prediction": topic
             }
-    

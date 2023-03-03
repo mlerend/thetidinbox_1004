@@ -1,13 +1,12 @@
-import pandas as pd
-import time
-import os
-import joblib
 import glob
+import os
+import time
 from string import punctuation
-from sklearn import metrics
-from sklearn.pipeline import Pipeline
+
+import joblib
+import pandas as pd
 from bertopic import BERTopic
-from preprocessing import preprocessing_pro_perso
+
 
 def bertopic_model():
     model = BERTopic(verbose=True,embedding_model='paraphrase-MiniLM-L3-v2', min_topic_size= 200)
@@ -24,13 +23,13 @@ def load_bertopic_model():
 
     pipe = joblib.load(model_path)
     return pipe
-  
+
 def save_bertopic_model(model):
     timestamp = time.strftime("%Y%m%d-%H%M%S")
     model_path = os.path.join("training_output", "bertopic_models", timestamp)#créer dossier bertopic model dans training output
     print(f"- model saved in : {model_path}")
     joblib.dump(model, model_path)
-    
+
 def dict_cat():
     dict_cat = {-1:"Other",
            0:"Other",

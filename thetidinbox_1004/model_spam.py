@@ -1,13 +1,13 @@
 
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfTransformer, TfidfVectorizer
+import glob
+import os
 import pickle
 import time
-import os
+
 import joblib
-import glob
-import mlflow
+from sklearn.feature_extraction.text import (CountVectorizer, TfidfTransformer,
+                                             TfidfVectorizer)
+from sklearn.naive_bayes import MultinomialNB
 
 
 def count_vectorizer():
@@ -67,38 +67,38 @@ def load_pipeline_spam():
 
     return pipe
 
-def save_pipeline_spam_cloud(model = None,
-               params: dict = None,
-               metrics: dict = None):
-# retrieve MLFLOW_xxx params from `.env`
-    mlflow_tracking_uri = os.environ.get("MLFLOW_TRACKING_URI")
-    mlflow_experiment = os.environ.get("MLFLOW_EXPERIMENT")
-    mlflow_model_name = os.environ.get("MLFLOW_MODEL_NAME")
+# def save_pipeline_spam_cloud(model = None,
+#                params: dict = None,
+#                metrics: dict = None):
+# # retrieve MLFLOW_xxx params from `.env`
+#     mlflow_tracking_uri = os.environ.get("MLFLOW_TRACKING_URI")
+#     mlflow_experiment = os.environ.get("MLFLOW_EXPERIMENT")
+#     mlflow_model_name = os.environ.get("MLFLOW_MODEL_NAME")
 
-# configure mlflow
-    mlflow.set_tracking_uri(mlflow_tracking_uri)
-    mlflow.set_experiment(experiment_name=mlflow_experiment)
+# # configure mlflow
+#     mlflow.set_tracking_uri(mlflow_tracking_uri)
+#     mlflow.set_experiment(experiment_name=mlflow_experiment)
 
-    with mlflow.start_run():
+#     with mlflow.start_run():
 
-    # STEP 1: push parameters to mlflow
-        if params is not None:
-            mlflow.log_params(params)
+#     # STEP 1: push parameters to mlflow
+#         if params is not None:
+#             mlflow.log_params(params)
 
-    # STEP 2: push metrics to mlflow
-        if metrics is not None:
-            mlflow.log_metrics(metrics)
+#     # STEP 2: push metrics to mlflow
+#         if metrics is not None:
+#             mlflow.log_metrics(metrics)
 
-    # STEP 3: push model to mlflow
-        if model is not None:
-            mlflow.sklearn.log_model(sk_model=model,
-                                     artifact_path="model_spam",
-                                    registered_model_name=mlflow_model_name)
+#     # STEP 3: push model to mlflow
+#         if model is not None:
+#             mlflow.sklearn.log_model(sk_model=model,
+#                                      artifact_path="model_spam",
+#                                     registered_model_name=mlflow_model_name)
 
-    print("\n✅ data saved to mlflow")
+#     print("\n✅ data saved to mlflow")
 
-    return None
+#     return None
 
-if __name__ == '__main__':
-    pipe_spam = load_pipeline_spam()
-    save_pipeline_spam_cloud(model=pipe_spam["classify"])
+# if __name__ == '__main__':
+#     pipe_spam = load_pipeline_spam()
+#     save_pipeline_spam_cloud(model=pipe_spam["classify"])

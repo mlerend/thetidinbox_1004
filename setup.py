@@ -1,5 +1,4 @@
-from setuptools import find_packages
-from setuptools import setup
+from setuptools import find_packages, setup
 
 with open('requirements.txt') as f:
     content = f.readlines()
@@ -13,5 +12,5 @@ setup(name='thetidinbox_1004',
       test_suite='tests',
       # include_package_data: to install data from MANIFEST.in
       include_package_data=True,
-      scripts=['scripts/thetidinbox_1004-run'],
+    #   scripts=['scripts/thetidinbox_1004-run'],
       zip_safe=False)

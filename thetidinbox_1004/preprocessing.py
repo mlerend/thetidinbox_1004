@@ -1,10 +1,14 @@
 import re
 from string import punctuation
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
+
 import pandas as pd
-from data import populate_df, ham_spam_extended_dataset, conversational_for_spam
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
+
+from thetidinbox_1004.data import (conversational_for_spam,
+                                   ham_spam_extended_dataset, populate_df)
+
 
 def clean_email_spam(email):
 

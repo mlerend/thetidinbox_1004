@@ -1,18 +1,33 @@
+from math import sqrt
+
 import numpy as np
 import pandas as pd
-from preprocessing import clean_email_spam,stopword_removal, preprocessing_pro_perso,preprocessing_spam
-from model_spam import count_vectorizer, term_frequency,tfidf, model_spam, save_pipeline_spam, load_pipeline_spam
-from model_pro_perso import vectorizer, model_pro_perso, save_pipeline_pro_perso,load_pipeline_pro_perso
-from model_action_word import action_dict, is_word_present, which_word_present, which_column_present, unique_values
-from model_bertopic import bertopic_model, save_bertopic_model, load_bertopic_model, dict_cat
-from model_meeting_invit import classify_meeting_invit
-from model_urgent_word import urgent_vocab_dict
-from model_todo import generate_to_do
-from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_squared_error
-from math import sqrt
-from data import pro_perso_dataset
-from gmail_api import google_api
+from sklearn.pipeline import Pipeline
+
+from thetidinbox_1004.data import pro_perso_dataset
+from thetidinbox_1004.gmail_api import google_api
+from thetidinbox_1004.model_action_word import (action_dict, is_word_present,
+                                                unique_values,
+                                                which_column_present,
+                                                which_word_present)
+from thetidinbox_1004.model_bertopic import (bertopic_model, dict_cat,
+                                             load_bertopic_model,
+                                             save_bertopic_model)
+from thetidinbox_1004.model_meeting_invit import classify_meeting_invit
+from thetidinbox_1004.model_pro_perso import (load_pipeline_pro_perso,
+                                              model_pro_perso,
+                                              save_pipeline_pro_perso,
+                                              vectorizer)
+from thetidinbox_1004.model_spam import (load_pipeline_spam, model_spam,
+                                         save_pipeline_spam, tfidf)
+from thetidinbox_1004.model_todo import generate_to_do
+from thetidinbox_1004.model_urgent_word import urgent_vocab_dict
+from thetidinbox_1004.preprocessing import (clean_email_spam,
+                                            preprocessing_pro_perso,
+                                            preprocessing_spam,
+                                            stopword_removal)
+
 
 def train_spam():
     """ Training and saving a model on spam/non-spam dataset"""
