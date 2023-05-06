@@ -1,6 +1,6 @@
 # packaging
 pip>=9
-setuptools>=26
+setuptools
 twine
 wheel>=0.29
 
@@ -29,15 +29,8 @@ joblib
 memoized-property
 termcolor
 # pickle
-os
 requests
 
 #email preprocessing
-re
-string
-nltk.stem.snowball
-nltk.corpus
-nltk.tokenize
-nltk.stem
-mailparser
+nltk
 email
