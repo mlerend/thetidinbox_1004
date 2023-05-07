@@ -1,7 +1,14 @@
 # Data analysis
 - Document here the project: thetidinbox_1004
-- Description: Project Description
+- Description: Email classification and to-do list extraction using NLP
+  - Emails classified into spam / ham
+  - Ham emails classified into professional / personal
+  - To-do list generation using Name Entity Recognition from Spacy package
+  - Topic classification for personal emails
 - Data Source:
+  - Enron dataset (Kaggle)
+  - Spam / ham dataset (Kaggle)
+  - Conversational dataset (Kaggle)
 - Type of analysis:
 
 Please document the project the better you can.
@@ -22,14 +29,13 @@ Unittest test:
 make clean install test
 ```
 
-Check for thetidinbox_1004 in github.com/{group}. If your project is not set please add it:
+Check for thetidinbox_1004 in github.com/mlerend. If your project is not set please add it:
 
-Create a new project on github.com/{group}/thetidinbox_1004
+Create a new project on github.com/mlerend/thetidinbox_1004
 Then populate it:
 
 ```bash
-##   e.g. if group is "{group}" and project_name is "thetidinbox_1004"
-git remote add origin git@github.com:{group}/thetidinbox_1004.git
+git remote add origin git@github.com:mlerend/thetidinbox_1004.git
 git push -u origin master
 git push -u origin --tags
 ```
@@ -45,7 +51,7 @@ thetidinbox_1004-run
 
 # Install
 
-Go to `https://github.com/{group}/thetidinbox_1004` to see the project, manage issues,
+Go to `https://github.com/mlerend/thetidinbox_1004` to see the project, manage issues,
 setup you ssh public key, ...
 
 Create a python3 virtualenv and activate it:
@@ -58,7 +64,7 @@ deactivate; virtualenv -ppython3 ~/venv ; source ~/venv/bin/activate
 Clone the project and install it:
 
 ```bash
-git clone git@github.com:{group}/thetidinbox_1004.git
+git clone git@github.com:mlerend/thetidinbox_1004.git
 cd thetidinbox_1004
 pip install -r requirements.txt
 make clean install test                # install and test
@@ -70,4 +76,14 @@ cd
 mkdir tmp
 cd tmp
 thetidinbox_1004-run
+```
+
+Connect to your Gmail inbox :
+- Follow Google instructions : [Go the instructions ](https://developers.google.com/gmail/api/quickstart/python?hl=fr)
+- Save the credentials.json in 'thetidinbox_1004/thetidinbox_1004'
+
+Launch the streamlit app:
+
+```bash
+streamlit run importst.py
 ```
