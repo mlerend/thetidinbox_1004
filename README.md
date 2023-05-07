@@ -4,12 +4,15 @@
   - Emails classified into spam / ham
   - Ham emails classified into professional / personal
   - To-do list generation using Name Entity Recognition from Spacy package
-  - Topic classification for personal emails
+  - Topic classification for personal emails using BerTopic
 - Data Source:
   - Enron dataset (Kaggle)
   - Spam / ham dataset (Kaggle)
   - Conversational dataset (Kaggle)
 - Type of analysis:
+  - NLP
+  - Transfer Learning
+  - Name Entity Recognition (Spacy)
 
 Please document the project the better you can.
 
@@ -85,5 +88,5 @@ Connect to your Gmail inbox :
 Launch the streamlit app:
 
 ```bash
-streamlit run importst.py
+streamlit run  streamlitapp/importst.py
 ```
