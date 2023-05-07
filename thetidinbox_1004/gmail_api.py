@@ -70,5 +70,5 @@ def google_api():
         print(f'An error occurred: {error}')
 
 if __name__ == '__main__':
-    google_api()
-    # print(res)
+    res = google_api()
+    print(res)

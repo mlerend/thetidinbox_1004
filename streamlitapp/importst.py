@@ -34,7 +34,7 @@ my_to_do_list = st.sidebar.button("✅  My To-Do List")
 
 # MAIN PAGE CONTENT
 ## banner config
-st.image("/Users/marinelerendu/banner.png", width=None)
+st.image("banner.png", width=None)
 
 ## call out config
 st.markdown("""
@@ -109,7 +109,7 @@ if my_messy_inbox:
                     creds.refresh(Request())
                 else:
                     flow = InstalledAppFlow.from_client_secrets_file(
-                        '/Users/marinelerendu/credentials.json', SCOPES)
+                        'credentials.json', SCOPES)
                     creds = flow.run_local_server(port=0)
                 # Save the credentials for the next run
                 with open('token.json', 'w') as token:
@@ -240,7 +240,7 @@ elif my_tidy_inbox:
                     creds.refresh(Request())
                 else:
                     flow = InstalledAppFlow.from_client_secrets_file(
-                        '/Users/marinelerendu/credentials.json', SCOPES)
+                        'credentials.json', SCOPES)
                     creds = flow.run_local_server(port=0)
                 # Save the credentials for the next run
                 with open('token.json', 'w') as token:
@@ -364,7 +364,7 @@ elif my_to_do_list:
                             creds.refresh(Request())
                         else:
                             flow = InstalledAppFlow.from_client_secrets_file(
-                                '/Users/marinelerendu/credentials.json', SCOPES)
+                                'credentials.json', SCOPES)
                             creds = flow.run_local_server(port=0)
                         # Save the credentials for the next run
                         with open('token.json', 'w') as token:
