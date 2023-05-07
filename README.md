@@ -83,7 +83,7 @@ thetidinbox_1004-run
 
 Connect to your Gmail inbox :
 - Follow Google instructions : [Go the instructions ](https://developers.google.com/gmail/api/quickstart/python?hl=fr)
-- Save the credentials.json in 'thetidinbox_1004/thetidinbox_1004'
+- Save the credentials.json in 'thetidinbox_1004/streamlitapp'
 
 Launch the streamlit app:
 
